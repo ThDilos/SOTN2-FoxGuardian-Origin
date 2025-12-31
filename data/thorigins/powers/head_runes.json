@@ -1,0 +1,872 @@
+{
+	"type": "origins:multiple",
+	"hidden": true,
+
+	"rune_id": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 5,
+		"min_action": {
+			"type": "origins:execute_command",
+			"command": "/playsound minecraft:block.beacon.deactivate player @s ~ ~ ~ 0.5 2"
+		}
+	},
+
+	"dash_duration": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 5,
+		"max_action": {
+			"type": "origins:if_else_list",
+			"actions": [
+				{
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_rune_id",
+						"compare_to": 2,
+						"comparison": "=="
+					},
+					"action": {
+						"type": "origins:play_sound",
+						"sound": "minecraft:entity.allay.hurt",
+						"volume": 2,
+						"pitch": 1,
+						"category": "players"
+					}
+				},
+				{
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_rune_id",
+						"compare_to": 3,
+						"comparison": "=="
+					},
+					"action": {
+						"type": "origins:play_sound",
+						"sound": "minecraft:entity.allay.hurt",
+						"volume": 2,
+						"pitch": 0.5,
+						"category": "players"
+					}
+				},
+				{
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_rune_id",
+						"compare_to": 4,
+						"comparison": "=="
+					},
+					"action": {
+						"type": "origins:play_sound",
+						"sound": "minecraft:entity.allay.hurt",
+						"volume": 2,
+						"pitch": 2.0,
+						"category": "players"
+					}
+				}
+			]
+		}
+	},
+
+	"cd": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 100
+	},
+
+	"cd_overlay": {
+		"type": "origins:model_color",
+		"blue": 1.0,
+		"red": 0.8,
+		"green": 0.8,
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_cd",
+			"compare_to": 0,
+			"comparison": ">"
+		}
+	},
+
+	"ticks": {
+		"type": "origins:action_over_time",
+		"interval": 1,
+		"entity_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_cd",
+					"change": -1
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_dash_duration",
+						"compare_to": 0,
+						"comparison": ">"
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:raven_runes_gliding",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:raven_runes_is_falling",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_dash_duration",
+								"change": -1
+							},
+							{
+								"type": "origins:spawn_particles",
+								"particle": "minecraft:end_rod",
+								"count": 5,
+								"speed": 0,
+								"spread": {
+									"x": 0.35,
+									"y": 0.25,
+									"z": 0.35
+								}
+							},
+							{
+								"type": "origins:spawn_particles",
+								"particle": "minecraft:wax_off",
+								"count": 3,
+								"speed": 0,
+								"spread": {
+									"x": 0.35,
+									"y": 0.25,
+									"z": 0.35
+								}
+							},
+							{
+								"type": "origins:set_fall_distance",
+								"fall_distance": 0
+							},
+							{
+								"type": "origins:if_else_list",
+								"actions": [
+									{
+										"condition": {
+											"type": "origins:resource",
+											"resource": "*:*_rune_id",
+											"compare_to": 2,
+											"comparison": "=="
+										},
+										"action": {
+											"type": "origins:and",
+											"actions": [
+												{
+													"type": "origins:spawn_particles",
+													"particle": {
+														"type": "minecraft:dust_color_transition",
+														"params": "0.02 0.98 0.81 1.2 0.86 0.98 0.53"
+													},
+													"count": 3,
+													"spread": {
+														"x": 0.25,
+														"y": 0.35,
+														"z": 0.25
+													},
+													"speed": 0
+												},
+												{
+													"type": "origins:spawn_particles",
+													"particle": {
+														"type": "minecraft:dust_color_transition",
+														"params": "0.02 0.85 0.87 1.2 0 0.85 0.97"
+													},
+													"count": 3,
+													"spread": {
+														"x": 0.25,
+														"y": 0.35,
+														"z": 0.25
+													},
+													"speed": 0
+												},
+												{
+													"type": "origins:spawn_particles",
+													"particle": {
+														"type": "minecraft:glow_squid_ink"
+													},
+													"count": 2,
+													"spread": {
+														"x": 0.25,
+														"y": 0.35,
+														"z": 0.25
+													},
+													"speed": 0
+												},
+												{
+													"type": "origins:area_of_effect",
+													"radius": 2,
+													"shape": "cube",
+													"bientity_condition": {
+														"type": "origins:and",
+														"conditions": [
+															{
+																"type": "origins:actor_condition",
+																"condition": {
+																	"type": "origins:resource",
+																	"resource": "*:back_runes_fox_body",
+																	"compare_to": 0,
+																	"comparison": "=="
+																}
+															},
+															{
+																"type": "origins:invert",
+																"inverted": true,
+																"condition": {
+																	"type": "origins:riding_recursive"
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:nbt",
+																	"nbt": "{Tags:[\"thought\"]}",
+																	"inverted": true
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:living"
+																}
+															}
+														]
+													},
+													"bientity_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:add_velocity",
+																"z": 3,
+																"y": 0.5
+															},
+															{
+																"type": "origins:if_else",
+																"condition": {
+																	"type": "origins:target_condition",
+																	"condition": {
+																		"type": "origins:nbt",
+																		"nbt": "{HurtTime:0s}"
+																	}
+																},
+																"if_action": {
+																	"type": "origins:and",
+																	"actions": [
+																		{
+																			"type": "origins:actor_action",
+																			"action": {
+																				"type": "origins:play_sound",
+																				"sound": "minecraft:entity.zombie.break_wooden_door",
+																				"category": "players",
+																				"pitch": 1.0,
+																				"volume": 0.8
+																			}
+																		},
+																		{
+																			"type": "origins:damage",
+																			"damage_type": "minecraft:fly_into_wall",
+																			"amount": 7
+																		}
+																	]
+																}
+															}
+														]
+													}
+												},
+												{
+													"type": "origins:change_resource",
+													"resource": "*:*_cd",
+													"change": 60,
+													"operation": "set"
+												},
+												{
+													"type": "origins:add_velocity",
+													"space": "local_horizontal",
+													"z": 2.0,
+													"x": 0,
+													"set": true
+												}
+											]
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:resource",
+											"resource": "*:*_rune_id",
+											"compare_to": 3,
+											"comparison": "=="
+										},
+										"action": {
+											"type": "origins:and",
+											"actions": [
+												{
+													"type": "origins:spawn_particles",
+													"particle": "minecraft:wax_off",
+													"count": 3,
+													"speed": 0,
+													"spread": {
+														"x": 0.35,
+														"y": 0.25,
+														"z": 0.35
+													}
+												},
+												{
+													"type": "origins:spawn_particles",
+													"particle": "minecraft:electric_spark",
+													"count": 10,
+													"speed": 0,
+													"spread": {
+														"x": 0.35,
+														"y": 0.25,
+														"z": 0.35
+													}
+												},
+												{
+													"type": "origins:area_of_effect",
+													"radius": 2,
+													"shape": "cube",
+													"bientity_condition": {
+														"type": "origins:and",
+														"conditions": [
+															{
+																"type": "origins:actor_condition",
+																"condition": {
+																	"type": "origins:resource",
+																	"resource": "*:back_runes_fox_body",
+																	"compare_to": 0,
+																	"comparison": "=="
+																}
+															},
+															{
+																"type": "origins:invert",
+																"inverted": true,
+																"condition": {
+																	"type": "origins:riding_recursive"
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:nbt",
+																	"nbt": "{Tags:[\"thought\"]}",
+																	"inverted": true
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:living"
+																}
+															}
+														]
+													},
+													"bientity_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:add_velocity",
+																"z": 5,
+																"y": 1.0
+															},
+															{
+																"type": "origins:if_else",
+																"condition": {
+																	"type": "origins:target_condition",
+																	"condition": {
+																		"type": "origins:nbt",
+																		"nbt": "{HurtTime:0s}"
+																	}
+																},
+																"if_action": {
+																	"type": "origins:and",
+																	"actions": [
+																		{
+																			"type": "origins:actor_action",
+																			"action": {
+																				"type": "origins:play_sound",
+																				"sound": "minecraft:entity.zombie.break_wooden_door",
+																				"category": "players",
+																				"pitch": 0.6,
+																				"volume": 1
+																			}
+																		},
+																		{
+																			"type": "origins:damage",
+																			"damage_type": "minecraft:fly_into_wall",
+																			"amount": 10
+																		}
+																	]
+																}
+															}
+														]
+													}
+												},
+												{
+													"type": "origins:change_resource",
+													"resource": "*:*_cd",
+													"change": 100,
+													"operation": "set"
+												},
+												{
+													"type": "origins:add_velocity",
+													"space": "local_horizontal",
+													"z": 3.0,
+													"x": 0,
+													"set": true
+												}
+											]
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:resource",
+											"resource": "*:*_rune_id",
+											"compare_to": 4,
+											"comparison": "=="
+										},
+										"action": {
+											"type": "origins:and",
+											"actions": [
+												{
+													"type": "origins:spawn_particles",
+													"particle": "minecraft:wax_on",
+													"count": 3,
+													"speed": 0,
+													"spread": {
+														"x": 0.35,
+														"y": 0.25,
+														"z": 0.35
+													}
+												},
+												{
+													"type": "origins:area_of_effect",
+													"radius": 2,
+													"shape": "cube",
+													"bientity_condition": {
+														"type": "origins:and",
+														"conditions": [
+															{
+																"type": "origins:actor_condition",
+																"condition": {
+																	"type": "origins:resource",
+																	"resource": "*:back_runes_fox_body",
+																	"compare_to": 0,
+																	"comparison": "=="
+																}
+															},
+															{
+																"type": "origins:invert",
+																"inverted": true,
+																"condition": {
+																	"type": "origins:riding_recursive"
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:nbt",
+																	"nbt": "{Tags:[\"thought\"]}",
+																	"inverted": true
+																}
+															},
+															{
+																"type": "origins:target_condition",
+																"condition": {
+																	"type": "origins:living"
+																}
+															}
+														]
+													},
+													"bientity_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:add_velocity",
+																"z": 1.2,
+																"y": 0.3
+															},
+															{
+																"type": "origins:if_else",
+																"condition": {
+																	"type": "origins:target_condition",
+																	"condition": {
+																		"type": "origins:nbt",
+																		"nbt": "{HurtTime:0s}"
+																	}
+																},
+																"if_action": {
+																	"type": "origins:and",
+																	"actions": [
+																		{
+																			"type": "origins:actor_action",
+																			"action": {
+																				"type": "origins:play_sound",
+																				"sound": "minecraft:entity.zombie.break_wooden_door",
+																				"category": "players",
+																				"pitch": 1.8,
+																				"volume": 0.6
+																			}
+																		},
+																		{
+																			"type": "origins:damage",
+																			"damage_type": "minecraft:fly_into_wall",
+																			"amount": 4
+																		}
+																	]
+																}
+															}
+														]
+													}
+												},
+												{
+													"type": "origins:change_resource",
+													"resource": "*:*_cd",
+													"change": 10,
+													"operation": "set"
+												},
+												{
+													"type": "origins:add_velocity",
+													"space": "local_horizontal",
+													"z": 1.0,
+													"x": 0,
+													"set": true
+												}
+											]
+										}
+									}
+								]
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+
+	"remove_falling": {
+		"type": "origins:modify_velocity",
+		"axes": ["y"],
+		"modifier": {
+			"operation": "set_total",
+			"value": 0.01
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_dash_duration",
+			"compare_to": 0,
+			"comparison": ">"
+		}
+	},
+
+	"glow_fox": {
+		"type": "origins:self_glow",
+		"use_teams": false,
+		"red": 0.4,
+		"green": 0.4,
+		"blue": 0.8,
+		"bientity_condition": {
+			"type": "origins:can_see"
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 2,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_dash_duration",
+					"compare_to": 0,
+					"comparison": ">"
+				}
+			]
+		}
+	},
+
+	"glow_ram": {
+		"type": "origins:self_glow",
+		"use_teams": false,
+		"red": 1,
+		"green": 0.92,
+		"blue": 0.16,
+		"bientity_condition": {
+			"type": "origins:can_see"
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 3,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_dash_duration",
+					"compare_to": 0,
+					"comparison": ">"
+				}
+			]
+		}
+	},
+
+	"glow_wolf": {
+		"type": "origins:self_glow",
+		"use_teams": false,
+		"red": 0.82,
+		"green": 0.82,
+		"blue": 0.82,
+		"bientity_condition": {
+			"type": "origins:can_see"
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 4,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_dash_duration",
+					"compare_to": 0,
+					"comparison": ">"
+				}
+			]
+		}
+	},
+
+	"invincible_frame": {
+		"type": "origins:invulnerability",
+		"damage_condition": {
+			"type": "origins:name",
+			"name": "outOfWorld",
+			"inverted": true
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_dash_duration",
+			"compare_to": 0,
+			"comparison": ">"
+		}
+	},
+
+	"active_self": {
+		"type": "origins:active_self",
+		"key": "key.origins.primary_active",
+		"entity_action": {
+			"type": "origins:if_else_list",
+			"actions": [
+				{
+					"condition": {
+						"type": "origins:and",
+						"conditions": [
+							{
+								"type": "origins:resource",
+								"resource": "*:*_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							{
+								"type": "origins:on_block",
+								"inverted": true
+							},
+							{
+								"type": "origins:resource",
+								"resource": "*:menu_spirit_energy",
+								"compare_to": 1,
+								"comparison": ">"
+							}
+						]
+					},
+					"action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:menu_extra_energy_to_be_changed",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:menu_energy_change",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_cd",
+								"change": 10,
+								"operation": "set"
+							},
+							{
+								"type": "origins:play_sound",
+								"sound": "minecraft:entity.fox.ambient",
+								"volume": 0.8,
+								"pitch": 1.2
+							},
+							{
+								"type": "origins:spawn_particles",
+								"offset_y": 0,
+								"particle": "minecraft:glow_squid_ink",
+								"count": 3,
+								"force": false
+							},
+							{
+								"type": "origins:spawn_particles",
+								"offset_y": 0,
+								"particle": "minecraft:sculk_soul",
+								"count": 5,
+								"speed": 0.01,
+								"force": false
+							},
+							{
+								"type": "origins:add_velocity",
+								"y": 0.8,
+								"set": true
+							}
+						]
+					}
+				},
+				{
+					"condition": {
+						"type": "origins:and",
+						"conditions": [
+							{
+								"type": "origins:or",
+								"conditions": [
+									{
+										"type": "origins:resource",
+										"resource": "*:*_rune_id",
+										"compare_to": 2,
+										"comparison": "=="
+									},
+									{
+										"type": "origins:resource",
+										"resource": "*:*_rune_id",
+										"compare_to": 4,
+										"comparison": "=="
+									}
+								]
+							},
+							{
+								"type": "origins:resource",
+								"resource": "*:menu_spirit_energy",
+								"compare_to": 0,
+								"comparison": ">"
+							}
+						]
+					},
+					"action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_dash_duration",
+								"change": 10,
+								"operation": "set"
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:menu_energy_change",
+								"change": -1
+							}
+						]
+					}
+				},
+				{
+					"condition": {
+						"type": "origins:and",
+						"conditions": [
+							{
+								"type": "origins:resource",
+								"resource": "*:*_rune_id",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							{
+								"type": "origins:resource",
+								"resource": "*:menu_spirit_energy",
+								"compare_to": 3,
+								"comparison": ">="
+							}
+						]
+					},
+					"action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_dash_duration",
+								"change": 10,
+								"operation": "set"
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:menu_extra_energy_to_be_changed",
+								"change": -2
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:menu_energy_change",
+								"change": -1
+							}
+						]
+					}
+				}
+			]
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_cd",
+			"compare_to": 0,
+			"comparison": "=="
+		}
+	},
+
+	"rune_of_eona_effect_0": {
+		"type": "origins:conditioned_attribute",
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_rune_id",
+			"compare_to": 5,
+			"comparison": "=="
+		},
+		"modifier": {
+			"attribute": "minecraft:generic.max_health",
+			"value": 4,
+			"operation": "addition",
+			"name": "Rune of Éona"
+		},
+		"update_health": false,
+		"tick_rate": 20
+	},
+
+	"rune_of_eona_effect_1": {
+		"type": "origins:modify_healing",
+		"modifier": {
+			"operation": "multiply_total",
+			"value": 1
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_rune_of_eona_effect_0"
+		}
+	}
+}

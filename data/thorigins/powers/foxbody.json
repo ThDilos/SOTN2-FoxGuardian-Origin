@@ -1,0 +1,154 @@
+{
+	"type": "origins:multiple",
+	"hidden": true,
+
+	"merge_nbt": {
+		"type": "origins:action_on_callback",
+		"entity_action_added": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/data merge entity @s {NoAI:1b,Sleeping:1b,Tags:[\"fox_body\"]}"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute store result score @s fox_body_owner_uuid0 run data get entity @p UUID[0] 1"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute at @p align y run tp @s ~ ~ ~ ~ ~"
+				}
+			]
+		}
+	},
+
+	"ticks_20": {
+		"type": "origins:action_over_time",
+		"entity_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @s add temp"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute as @a if score @s fox_body_owner_uuid0 = @e[tag=temp,limit=1] fox_body_owner_uuid0 run tag @s add fox_body_owner"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @s remove temp"
+				},
+				{
+					"type": "origins:selector_action",
+					"selector": "@e[tag=fox_body_owner]",
+					"bientity_condition": {
+						"type": "origins:target_condition",
+						"condition": {
+							"type": "origins:resource",
+							"resource": "*:back_runes_fox_body",
+							"compare_to": 1,
+							"comparison": "!="
+						}
+					},
+					"bientity_action": {
+						"type": "origins:actor_action",
+						"action": {
+							"type": "origins:change_resource",
+							"resource": "*:*_exit",
+							"change": 1
+						}
+					}
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @a[tag=fox_body_owner] remove fox_body_owner"
+				}
+			]
+		}
+	},
+
+	"hurt_return": {
+		"type": "origins:action_when_damage_taken",
+		"cooldown": 1,
+		"entity_action": {
+			"type": "origins:change_resource",
+			"resource": "*:*_tp_back",
+			"change": 1
+		}
+	},
+
+	"tp_back": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @s add temp"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute as @a if score @s fox_body_owner_uuid0 = @e[tag=temp,limit=1] fox_body_owner_uuid0 run tag @s add fox_body_owner"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/tp @a[tag=fox_body_owner] ~ ~ ~"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/effect give @a[tag=fox_body_owner] blindness 1 0 true"
+				},
+				{
+					"type": "origins:selector_action",
+					"selector": "@a[tag=fox_body_owner]",
+					"bientity_action": {
+						"type": "origins:target_action",
+						"action": {
+							"type": "origins:change_resource",
+							"resource": "*:back_runes_fox_body",
+							"change": -1
+						}
+					}
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @a[tag=fox_body_owner] remove fox_body_owner"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/tag @s remove temp"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_exit",
+					"change": 1
+				}
+			]
+		}
+	},
+
+	"exit": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/tp ~ -100 ~"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/kill @s"
+				}
+			]
+		}
+	}
+}

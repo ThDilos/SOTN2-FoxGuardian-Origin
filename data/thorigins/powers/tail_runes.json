@@ -1,0 +1,139 @@
+{
+	"type": "origins:multiple",
+	"hidden": true,
+
+	"rune_id": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 5,
+		"min_action": {
+			"type": "origins:execute_command",
+			"command": "/playsound minecraft:block.beacon.deactivate player @s ~ ~ ~ 0.5 2"
+		}
+	},
+
+	"rune_of_aetlyena_effect": {
+		"type": "origins:simple",
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_rune_id",
+			"compare_to": 1,
+			"comparison": "=="
+		}
+	},
+
+	"wisp_seeker_rune_effect_0": {
+		"type": "origins:entity_glow",
+		"use_teams": false,
+		"red": 1,
+		"green": 0.875,
+		"blue": 0,
+		"bientity_condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:distance",
+					"compare_to": 50,
+					"comparison": "<="
+				},
+				{
+					"type": "origins:target_condition",
+					"condition": {
+						"type": "origins:living"
+					}
+				}
+			]
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 2,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:sneaking"
+				}
+			]
+		}
+	},
+
+	"wisp_seeker_rune_effect_1": {
+		"type": "origins:shader",
+		"shader": "minecraft:shaders/post/sobel.json",
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_wisp_seeker_rune_effect_0"
+		}
+	},
+
+	"rune_of_suffering_effect": {
+		"type": "origins:simple",
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 3,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:relative_health",
+					"compare_to": 0.2,
+					"comparison": "<="
+				}
+			]
+		}
+	},
+
+	"moon_rune_effect": {
+		"type": "origins:simple",
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 4,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:daytime",
+					"inverted": true
+				}
+			]
+		}
+	},
+
+	"lore_rune_effect_0": {
+		"type": "origins:modify_grindstone",
+		"item_action_after_grinding": {
+			"type": "origins:remove_enchantment",
+			"enchantments": [
+				"minecraft:binding_curse",
+				"minecraft:vanishing_curse"
+			]
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_rune_id",
+			"compare_to": 5,
+			"comparison": "=="
+		}
+	},
+
+	"lore_rune_effect_1": {
+		"type": "origins:modify_xp_gain",
+		"modifier": {
+			"operation": "multiply_total",
+			"value": 1
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_lore_rune_effect_0"
+		}
+	}
+}

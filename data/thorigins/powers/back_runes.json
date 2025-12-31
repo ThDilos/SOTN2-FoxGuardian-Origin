@@ -1,0 +1,860 @@
+{
+	"type": "origins:multiple",
+	"hidden": true,
+	
+	"rune_id": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 5,
+		"min_action": {
+			"type": "origins:execute_command",
+			"command": "/playsound minecraft:block.beacon.deactivate player @s ~ ~ ~ 0.5 2"
+		}
+	},
+
+	"_init_": {
+		"type": "origins:action_on_callback",
+		"entity_action_added": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/scoreboard objectives add fox_body_owner_uuid0 dummy \"Fox Body Owner UUID[0]\""
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute store result score @s fox_body_owner_uuid0 run data get entity @s UUID[0] 1"
+				}
+			]
+		}
+	},
+
+	"ticks": {
+		"type": "origins:action_over_time",
+		"interval": 1,
+		"entity_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_rune_id",
+						"compare_to": 1,
+						"comparison": "!="
+					},
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_wisp_form",
+						"change": -1
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_rune_id",
+						"compare_to": 2,
+						"comparison": "!="
+					},
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_spirit_form",
+						"change": -1
+					}
+				}
+			]
+		}
+	},
+
+	"ticks_20": {
+		"type": "origins:action_over_time",
+		"entity_action": {
+			"type": "origins:change_resource",
+			"resource": "*:*_energy_cost",
+			"change": -20
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_fox_body",
+			"compare_to": 1,
+			"comparison": "=="
+		}
+	},
+
+	"energy_cost": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 40,
+		"start_value": 20,
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_cost",
+					"change": 40,
+					"operation": "set"
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:menu_spirit_energy",
+						"compare_to": 0,
+						"comparison": ">"
+					},
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:menu_energy_change",
+						"change": -1
+					},
+					"else_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_fox_body",
+						"change": -1
+					}
+				}
+			]
+		}
+	},
+
+	"fox_body": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:raven_runes_gliding",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_cost",
+					"change": 20,
+					"operation": "set"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/playsound minecraft:block.enchantment_table.use player @s ~ ~ ~ 1 1.2"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/execute summon fox run power grant @s thorigins:foxbody thorigins:temp"
+				}
+			]
+		},
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:execute_command",
+					"command": "/execute as @e[type=fox,tag=fox_body] if score @s fox_body_owner_uuid0 = @p fox_body_owner_uuid0 run resource change @s thorigins:foxbody_tp_back 1"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_wisp_form",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_spirit_form",
+					"change": -1
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/playsound minecraft:entity.puffer_fish.blow_up player @s ~ ~ ~ 1 1.6"
+				}
+			]
+		}
+	},
+
+	"wisp_form": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_fox_body",
+					"change": 1
+				},
+				{
+					"type": "origins:add_velocity",
+					"y": 1,
+					"set": true
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale multiply pehkui:hitbox_height 0.1 @s"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale multiply pehkui:hitbox_width 0.1 @s"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale multiply pehkui:eye_height 0.1 @s"
+				}
+			]
+		},
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_fox_body",
+					"change": -1
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale divide pehkui:hitbox_height 0.1 @s"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale divide pehkui:hitbox_width 0.1 @s"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale divide pehkui:eye_height 0.1 @s"
+				}
+			]
+		}
+	},
+
+	"spirit_form": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_fox_body",
+					"change": 1
+				},
+				{
+					"type": "origins:add_velocity",
+					"y": 1,
+					"set": true
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale multiply pehkui:visibility 0.01 @s"
+				}
+			]
+		},
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_fox_body",
+					"change": -1
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/scale divide pehkui:visibility 0.01 @s"
+				}
+			]
+		}
+	},
+
+	"switch_form": {
+		"type": "origins:active_self",
+		"key": "key.origins.secondary_active",
+		"cooldown": 10,
+		"entity_action": {
+			"type": "origins:if_else",
+			"condition": {
+				"type": "origins:resource",
+				"resource": "*:*_fox_body",
+				"compare_to": 1,
+				"comparison": "=="
+			},
+			"if_action": {
+				"type": "origins:change_resource",
+				"resource": "*:*_fox_body",
+				"change": -1
+			},
+			"else_action": {
+				"type": "origins:if_else",
+				"condition": {
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 1,
+					"comparison": "=="
+				},
+				"if_action": {
+					"type": "origins:change_resource",
+					"resource": "*:*_wisp_form",
+					"change": 1
+				},
+				"else_action": {
+					"type": "origins:change_resource",
+					"resource": "*:*_spirit_form",
+					"change": 1
+				}
+			}
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:menu_spirit_energy",
+					"compare_to": 0,
+					"comparison": ">"
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 1,
+					"comparison": ">="
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 2,
+					"comparison": "<="
+				}
+			]
+		}
+	},
+
+	"both_forms_ignore_col": {
+		"type": "origins:prevent_entity_collision",
+		"condition": {
+			"type": "origins:or",
+			"conditions": [
+				{
+					"type": "origins:resource",
+					"resource": "*:*_wisp_form",
+					"compare_to": 1,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_spirit_form",
+					"compare_to": 1,
+					"comparison": "=="
+				}
+			]
+		}
+	},
+
+	"both_forms_invul": {
+		"type": "origins:modify_damage_taken",
+		"damage_condition": {
+			"type": "origins:name",
+			"name": "outOfWorld",
+			"inverted": true
+		},
+		"modifier": {
+			"operation": "set_total",
+			"value": 0
+		},
+		"self_action": {
+			"type": "origins:extinguish"
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_no_interact_with_mobs": {
+		"type": "origins:prevent_entity_use",
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_no_item_use": {
+		"type": "origins:prevent_item_use",
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_no_hurt_others": {
+		"type": "origins:stacking_status_effect",
+		"min_stacks": 0,
+		"max_stacks": 1,
+		"tick_rate": 10,
+		"duration_per_stack": 15,
+		"effect": {
+			"effect": "minecraft:weakness",
+			"duration": 15,
+			"show_icon": true,
+			"is_ambient": true,
+			"show_particles": false,
+			"amplifier": 254
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_no_block_selection": {
+		"type": "apoli:prevent_block_selection",
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_ignore_certain_blocks": {
+		"type": "origins:phasing",
+		"block_condition": {
+			"type": "origins:or",
+			"conditions": [
+				{
+					"type": "origins:light_blocking",
+					"inverted": true
+				},
+				{
+					"type": "origins:movement_blocking",
+					"inverted": true
+				}
+			]
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_no_exhaustion": {
+		"type": "origins:modify_exhaustion",
+		"modifier": {
+			"operation": "set_total",
+			"value": 0
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"both_forms_chirp": {
+		"type": "origins:active_self",
+		"cooldown": 10,
+		"key": "key.use",
+		"entity_action": {
+			"type": "origins:if_else",
+			"condition": {
+				"type": "origins:resource",
+				"resource": "*:*_wisp_form",
+				"compare_to": 1,
+				"comparison": "=="
+			},
+			"if_action": {
+				"type": "origins:and",
+				"actions": [
+					{
+						"type": "origins:play_sound",
+						"sound": "minecraft:entity.allay.ambient_with_item",
+						"volume": 0.6,
+						"pitch": 1.3,
+						"category": "players"
+					},
+					{
+						"type": "origins:spawn_particles",
+						"offset_y": 0,
+						"count": 1,
+						"force": false,
+						"particle": "minecraft:flash"
+					}
+				]
+			},
+			"else_action": {
+				"type": "origins:and",
+				"actions": [
+					{
+						"type": "origins:play_sound",
+						"sound": "minecraft:entity.fox.screech",
+						"volume": 0.5,
+						"pitch": 1.4,
+						"category": "players"
+					},
+					{
+						"type": "origins:spawn_particles",
+						"count": 1,
+						"force": false,
+						"particle": {
+							"type": "minecraft:shriek",
+							"params": "0"
+						}
+					}
+				]
+			}
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_both_forms_ignore_col"
+		}
+	},
+
+	"wisp_form_invis": {
+		"type": "origins:invisibility",
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_wisp_form",
+			"compare_to": 1,
+			"comparison": "=="
+		}
+	},
+
+	"wisp_form_slow_fall": {
+		"type": "origins:modify_falling",
+		"velocity": 0.005,
+		"take_fall_damage": false,
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_wisp_form_invis"
+		}
+	},
+
+	"wisp_form_float_up": {
+		"type": "origins:active_self",
+		"key": {
+			"key": "key.jump",
+			"continuous": true
+		},
+		"entity_action": {
+			"type": "origins:add_velocity",
+			"y": 0.3,
+			"set": true
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_wisp_form_invis"
+		}
+	},
+
+	"wisp_form_faster_float": {
+		"type": "origins:modify_air_speed",
+		"modifier": {
+			"operation": "multiply_total",
+			"value": 1
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_wisp_form_invis"
+		}
+	},
+
+	"wisp_form_particle": {
+		"type": "origins:particle",
+		"particle": "minecraft:end_rod",
+		"frequency": 1,
+		"count": 5,
+		"spread": {
+			"x": 0.05,
+			"y": 0.05,
+			"z": 0.05
+		},
+		"offset_y": 0,
+		"force": true,
+		"visible_in_first_person": false,
+		"visible_while_invisible": true,
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_wisp_form_invis"
+		}
+	},
+
+	"spirit_form_transparent": {
+		"type": "origins:model_color",
+		"alpha": 0.2,
+		"blue": 1,
+		"red": 0.5,
+		"green": 0.7,
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_spirit_form",
+			"compare_to": 1,
+			"comparison": "=="
+		}
+	},
+
+	"spirit_form_glow": {
+		"type": "origins:self_glow",
+		"use_teams": false,
+		"red": 0,
+		"blue": 0.85,
+		"green": 0.97,
+		"bientity_condition": {
+			"type": "origins:can_see"
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_spirit_form_transparent"
+		}
+	},
+
+	"spirit_form_lava_walker": {
+		"type": "origins:walk_on_fluid",
+		"fluid": "minecraft:lava",
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:fluid_height",
+					"fluid": "minecraft:lava",
+					"comparison": "<=",
+					"compare_to": 0.4
+				},
+				{
+					"type": "origins:power_active",
+					"power": "*:*_spirit_form_transparent"
+				}
+			]
+		}
+	},
+
+	"spirit_form_water_walker": {
+		"type": "origins:walk_on_fluid",
+		"fluid": "minecraft:water",
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:fluid_height",
+					"fluid": "minecraft:water",
+					"comparison": "<=",
+					"compare_to": 0.4
+				},
+				{
+					"type": "origins:power_active",
+					"power": "*:*_spirit_form_transparent"
+				}
+			]
+		}
+	},
+
+	"spirit_form_no_fall_sound": {
+		"type": "origins:modify_falling",
+		"take_fall_damage": false,
+		"velocity": 0.08,
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:fluid_height",
+					"fluid": "minecraft:water",
+					"comparison": "<=",
+					"compare_to": 0.4
+				},
+				{
+					"type": "origins:power_active",
+					"power": "*:*_spirit_form_transparent"
+				}
+			]
+		}
+	},
+
+	"spirit_form_particle0": {
+		"type": "origins:particle",
+		"particle": {
+			"type": "minecraft:dust_color_transition",
+			"params": "0.02 0.98 0.81 1.2 0.86 0.98 0.53"
+		},
+		"count": 10,
+		"frequency": 4,
+		"offset_y": 0.5,
+		"spread": {
+			"x": 0.25,
+			"y": 0.35,
+			"z": 0.25
+		},
+		"speed": 0,
+		"visible_in_first_person": false,
+		"force": true,
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_spirit_form_transparent"
+		}
+	},
+
+	"spirit_form_particle1": {
+		"type": "origins:particle",
+		"particle": {
+			"type": "minecraft:dust_color_transition",
+			"params": "0.02 0.85 0.87 1.2 0 0.85 0.97"
+		},
+		"count": 10,
+		"frequency": 5,
+		"offset_y": 0.5,
+		"spread": {
+			"x": 0.25,
+			"y": 0.35,
+			"z": 0.25
+		},
+		"speed": 0,
+		"visible_in_first_person": false,
+		"force": true,
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_spirit_form_transparent"
+		}
+	},
+
+	"storm_cloak_rune_effect": {
+		"type": "origins:modify_damage_taken",
+		"damage_condition": {
+			"type": "origins:name",
+			"name": "lightningBolt"
+		},
+		"modifier": {
+			"value": -0.5,
+			"operation": "multiply_total"
+		},
+		"self_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:menu_extra_energy_to_be_changed",
+					"change": 11
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:menu_energy_change",
+					"change": 1
+				}
+			]
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_rune_id",
+			"compare_to": 3,
+			"comparison": "=="
+		}
+	},
+
+	"flame_cloak_rune_effect": {
+		"type": "origins:modify_damage_taken",
+		"damage_condition": {
+			"type": "origins:name",
+			"name": "onFire"
+		},
+		"self_action": {
+			"type": "origins:extinguish"
+		},
+		"condition": {
+			"type": "origins:resource",
+			"resource": "*:*_rune_id",
+			"compare_to": 4,
+			"comparison": "=="
+		}
+	},
+
+	"bright_heart_rune_effect_0": {
+		"type": "origins:effect_immunity",
+		"effects": [
+			"minecraft:poison",
+			"minecraft:wither",
+			"minecraft:blindness",
+			"minecraft:darkness",
+			"minecraft:hunger",
+			"minecraft:bad_omen",
+			"minecraft:weakness",
+			"minecraft:slowness",
+			"minecraft:nausea",
+			"minecraft:mining_fatigue",
+			"minecraft:instant_damage"
+		],
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:or",
+					"conditions": [
+						{
+							"type": "origins:resource",
+							"resource": "*:*_bright_heart_rune_effect_timer",
+							"compare_to": 0,
+							"comparison": ">"
+						},
+						{
+							"type": "origins:resource",
+							"resource": "*:menu_spirit_energy",
+							"compare_to": 0,
+							"comparison": ">"
+						}
+					]
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:*_rune_id",
+					"compare_to": 5,
+					"comparison": "=="
+				}
+			]
+		}
+	},
+
+	"bright_heart_rune_effect_1": {
+		"type": "origins:modify_damage_taken",
+		"damage_condition": {
+			"type": "origins:or",
+			"conditions": [
+				{
+					"type": "origins:name",
+					"name": "indirectMagic"
+				},
+				{
+					"type": "origins:name",
+					"name": "magic"
+				}
+			]
+		},
+		"modifier": {
+			"value": 0,
+			"operation": "set_total"
+		},
+		"self_action": {
+			"type": "origins:if_else",
+			"condition": {
+				"type": "origins:resource",
+				"resource": "*:*_bright_heart_rune_effect_timer",
+				"compare_to": 0,
+				"comparison": "=="
+			},
+			"if_action": {
+				"type": "origins:and",
+				"actions": [
+					{
+						"type": "origins:trigger_cooldown",
+						"power": "*:*_bright_heart_rune_effect_timer"
+					},
+					{
+						"type": "origins:change_resource",
+						"resource": "*:menu_energy_change",
+						"change": -1
+					}
+				]
+			}
+		},
+		"condition": {
+			"type": "origins:power_active",
+			"power": "*:*_bright_heart_rune_effect_0"
+		}
+	},
+
+	"bright_heart_rune_effect_timer": {
+		"type": "origins:cooldown",
+		"cooldown": 20
+	}
+}

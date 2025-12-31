@@ -1,0 +1,16 @@
+{
+	"powers": [
+		"thorigins:menu",
+		"thorigins:head_runes",
+		"thorigins:back_runes",
+		"thorigins:leg_runes",
+		"thorigins:tail_runes",
+		"thorigins:raven_runes",
+		"thorigins:guardian_blessings",
+		"thorigins:fox_self"
+	],
+	"icon": "minecraft:beacon",
+	"impact": 3,
+	"name": "Fox Guardian",
+	"description": "Descendent of Yepi and Aetlyena. Destined to Bring the Late-Come Peace and Healing upon the Northern Isles."
+}

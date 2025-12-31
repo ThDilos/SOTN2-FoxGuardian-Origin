@@ -1,0 +1,2823 @@
+{
+	"type": "origins:multiple",
+	"name": "§6§l§nRune Slots",
+	"description": "Engrave runes on your fur to strengthen yourself with the powers of the elders.",
+
+	"badges": [
+		{
+			"type": "origins:tooltip",
+			"sprite": "origins:textures/gui/badge/star.png",
+			"text": [
+				{
+					"translate": "Press [%s] to inspect your Rune Slots.",
+					"with": [
+						{
+							"keybind": "key.saveToolbarActivator",
+							"color": "aqua"
+						}
+					]
+				},
+				{
+					"text": "\n\n"
+				},
+				{
+					"text": "Key used is [Creative Mode - Save Hotbar Activator]",
+					"color": "dark_gray"
+				}
+			]
+		},
+		{
+			"type": "origins:tooltip",
+			"sprite": "origins:textures/gui/badge/info.png",
+			"text": [
+				{
+					"translate": "Use [%s] to trigger your Head Rune's active effect.\nUse [%s] to trigger your Back Rune's active effect.\nHold [%s] when falling to use your Raven Rune's effect.",
+					"with": [
+						{
+							"keybind": "key.origins.primary_active",
+							"color": "aqua"
+						},
+						{
+							"keybind": "key.origins.secondary_active",
+							"color": "aqua"
+						},
+						{
+							"keybind": "key.jump",
+							"color": "aqua"
+						}
+					]
+				},
+				{
+					"text": "\n\n"
+				},
+				{
+					"text": "Keys used are [Origins - Primary, Secondary] And [Movement - Jump]",
+					"color": "dark_gray"
+				}
+			]
+		}
+	],
+
+	"spirit_energy": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 12,
+		"start_value": 12,
+		"hud_render": {
+			"should_render": true,
+			"sprite_location": "thorigins3:textures/sotn2_resource_bar.png",
+			"bar_index": 0,
+			"condition": {
+				"type": "origins:resource",
+				"resource": "*:*_show_time",
+				"compare_to": 0,
+				"comparison": ">"
+			}
+		}
+	},
+
+	"show_time": {
+		"type": "origins:cooldown",
+		"cooldown": 200
+	},
+
+	"show_energy": {
+		"type": "origins:active_self",
+		"key": "key.sneak",
+		"entity_action": {
+			"type": "origins:trigger_cooldown",
+			"power": "*:*_show_time"
+		}
+	},
+
+	"extra_energy_to_be_changed": {
+		"type": "origins:resource",
+		"min": -11,
+		"start_value": 0,
+		"max": 11
+	},
+
+	"energy_change": {
+		"type": "origins:resource",
+		"start_value": 1,
+		"min": 0,
+		"max": 2,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:trigger_cooldown",
+					"power": "*:*_show_time"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_change",
+					"change": 1,
+					"operation": "set"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_spirit_energy",
+					"change": 1
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_extra_energy_to_be_changed",
+						"compare_to": 0,
+						"comparison": ">"
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_extra_energy_to_be_changed",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_change",
+								"change": 1
+							}
+						]
+					}
+				}
+			]
+		},
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:trigger_cooldown",
+					"power": "*:*_show_time"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_change",
+					"change": 1,
+					"operation": "set"
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_spirit_energy",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_replenish_cd",
+					"change": 120
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_extra_energy_to_be_changed",
+						"compare_to": 0,
+						"comparison": "<"
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_extra_energy_to_be_changed",
+								"change": 1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_change",
+								"change": -1
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+
+	"energy_replenish_cd": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 120,
+		"min_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_replenish_cd",
+					"change": 120
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_change",
+					"change": 1
+				}
+			]
+		}
+	},
+
+	"replenishing": {
+		"type": "origins:action_over_time",
+		"interval": 10,
+		"entity_action": {
+			"type": "origins:if_else",
+			"condition": {
+				"type": "origins:resource",
+				"resource": "*:*_spirit_energy",
+				"compare_to": 12,
+				"comparison": "<"
+			},
+			"if_action": {
+				"type": "origins:if_else",
+				"condition": {
+					"type": "origins:resource",
+					"resource": "*:*_energy_replenish_cd",
+					"compare_to": 0,
+					"comparison": "=="
+				},
+				"if_action": {
+					"type": "origins:change_resource",
+					"resource": "*:*_energy_replenish_cd",
+					"change": 120
+				},
+				"else_action": {
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:power_active",
+								"power": "*:tail_runes_rune_of_aetlyena_effect"
+							},
+							"action": {
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_replenish_cd",
+								"change": -24
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:power_active",
+								"power": "*:tail_runes_rune_of_suffering_effect"
+							},
+							"action": {
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_replenish_cd",
+								"change": -120
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:power_active",
+								"power": "*:tail_runes_moon_rune_effect"
+							},
+							"action": {
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_replenish_cd",
+								"change": -40
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:constant",
+								"value": true
+							},
+							"action": {
+								"type": "origins:change_resource",
+								"resource": "*:*_energy_replenish_cd",
+								"change": -15
+							}
+						}
+					]
+				}
+			}
+		},
+		"condition": {
+			"type": "origins:and",
+			"conditions": [
+				{
+					"type": "origins:and",
+					"inverted": true,
+					"conditions": [
+						{
+							"type": "origins:submerged_in",
+							"fluid": "minecraft:water"
+						},
+						{
+							"type": "origins:power_active",
+							"power": "*:leg_runes_rune_of_the_drowned_effect_0"
+						}
+					]
+				},
+				{
+					"type": "origins:resource",
+					"resource": "*:leg_runes_double_sprint",
+					"compare_to": 0,
+					"comparison": "=="
+				}
+			]
+		}
+	},
+
+	"current_page": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 5,
+		"start_value": 0,
+		"min_action": {
+			"type": "origins:change_resource",
+			"resource": "*:*_load_main_page",
+			"change": 1
+		}
+	},
+
+	"refresh_current_page": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": -1
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/playsound minecraft:block.stone_button.click_on player @s ~ ~ ~ 1 2"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"stack": {
+						"item": "minecraft:air"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slots": [
+						"container.0",
+						"container.1",
+						"container.2",
+						"container.3",
+						"container.4",
+						"container.5",
+						"container.6",
+						"container.7",
+						"container.8",
+						"container.9"
+					],
+					"stack": {
+						"item": "minecraft:gray_stained_glass_pane",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				}
+			]
+		}
+	},
+
+	"load_main_page": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_main_page",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 0,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Head Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:orange_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Back Rune\",\"bold\":true,\"italic\":false,\"color\":\"orange\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.2",
+					"stack": {
+						"item": "minecraft:gray_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Leg Rune\",\"bold\":true,\"italic\":false,\"color\":\"gray\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.3",
+					"stack": {
+						"item": "minecraft:white_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Tail Rune\",\"bold\":true,\"italic\":false,\"color\":\"white\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.4",
+					"stack": {
+						"item": "minecraft:black_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Raven Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_purple\"}]'},delete_if_out:1,HideFlags:1}"
+					}
+				}
+			]
+		}
+	},
+
+	"load_head_rune": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_head_rune",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 1,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:light_blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Spirit Jump Rune\",\"bold\":true,\"italic\":false,\"color\":\"blue\"}]',Lore:['[\"\",{\"text\":\"Grants the ability to Spirit Jump while in the air.\"}]','[\"\"]','[{\"text\":\"Runes of Aetlyena\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Fox Dash Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[{\"text\":\"Grants the ability to Dash.\"}]','[\"\"]','[{\"text\":\"Runes of Yepi\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.2",
+					"stack": {
+						"item": "minecraft:yellow_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Ram Dash Rune\",\"bold\":true,\"italic\":false,\"color\":\"yellow\"}]',Lore:['[\"\",{\"text\":\"Grants the ability to Dash long distances with a long cooldown and high energy cost.\"}]','[\"\"]','[{\"text\":\"Runes of Eres\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.3",
+					"stack": {
+						"item": "minecraft:gray_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Wolf Dash Rune\",\"bold\":true,\"italic\":false,\"color\":\"gray\"}]',Lore:['[\"\",{\"text\":\"Grants the ability to Dash short distances with a short cooldown.\"}]','[\"\"]','[{\"text\":\"Runes of Okama and Esmir\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.4",
+					"stack": {
+						"item": "minecraft:purple_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Rune of Éona\",\"bold\":true,\"italic\":false,\"color\":\"dark_purple\"}]',Lore:['[\"\",{\"text\":\"Gain 4 Extra Maximum Health Points.\"}]','[{\"text\":\"Double the healing effect from all sources.\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:head_runes_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.0",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:head_runes_rune_id",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.1",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:head_runes_rune_id",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.2",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:head_runes_rune_id",
+								"compare_to": 4,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.3",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:head_runes_rune_id",
+								"compare_to": 5,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.4",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+
+	"load_back_rune": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_back_rune",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 2,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:light_blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Wisp Rune\",\"bold\":true,\"italic\":false,\"color\":\"blue\"}]',Lore:['[\"\",{\"text\":\"Grants the ability to become a wisp to scout surrounding area.\"}]','[\"\"]','[{\"text\":\"Runes of Aetlyena\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Spirit Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[{\"text\":\"Grants the ability to become a Spirit Fox.\"}]','[\"\"]','[{\"text\":\"Runes of Yepi\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.2",
+					"stack": {
+						"item": "minecraft:yellow_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Storm Cloak Rune\",\"bold\":true,\"italic\":false,\"color\":\"yellow\"}]',Lore:['[\"\",{\"text\":\"Lightning restores Spirit Energy.\"}]','[{\"text\":\"Reduced damage from lightning.\"}]','[\"\"]','[{\"text\":\"Runes of Eres\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.3",
+					"stack": {
+						"item": "minecraft:white_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Flame Cloak Rune\",\"bold\":true,\"italic\":false,\"color\":\"gold\"}]',Lore:['[\"\",{\"text\":\"Reduced fire damage and burn duration.\"}]','[\"\"]','[{\"text\":\"Runes of Okama and Esmir\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.4",
+					"stack": {
+						"item": "minecraft:red_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Bright Heart Rune\",\"bold\":true,\"italic\":false,\"color\":\"red\"}]',Lore:['[\"\",{\"text\":\"Immunity against negative potion effects.\"}]','[{\"text\":\"Immunity against Magic Damage.\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:back_runes_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.0",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:back_runes_rune_id",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.1",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:back_runes_rune_id",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.2",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:back_runes_rune_id",
+								"compare_to": 4,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.3",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:back_runes_rune_id",
+								"compare_to": 5,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.4",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+
+	"load_leg_rune": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_leg_rune",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 3,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Feather Fall Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[{\"text\":\"Gain immunity against fall damage.\"}]','[\"\"]','[{\"text\":\"Runes of Yepi\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:brown_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Thorn Walker Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_green\"}]',Lore:['[{\"text\":\"Use Spirit Energy to prevent pricking damage.\"}]','[\"\"]','[{\"text\":\"Runes of Oto-Oksu\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.2",
+					"stack": {
+						"item": "minecraft:yellow_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Spirit Sprint Rune\",\"bold\":true,\"italic\":false,\"color\":\"yellow\"}]',Lore:['[{\"text\":\"Double tap Sprint to Sprint even faster.\"}]','[\"\"]','[{\"text\":\"Runes of Eres\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.3",
+					"stack": {
+						"item": "minecraft:light_blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Rune of the Drowned\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[\"\",{\"text\":\"Sink instead of swim.\"}]','[{\"text\":\"Able to breathe under water.\"}]','[\"\"]','[{\"text\":\"Runes of Okama and Esmir\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.4",
+					"stack": {
+						"item": "minecraft:gray_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Lava Walker Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_red\"}]',Lore:['[{\"text\":\"Immune to damage from standing on scorching floor.\"}]','[{\"text\":\"Immune to damage from Lava.\"}]','[{\"text\":\"Able to walk on Lava.\"}]','[\"\"]','[{\"text\":\"Runes of Otamatak\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.5",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Water Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_blue\"}]',Lore:['[\"\",{\"text\":\"Swim much faster.\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.0",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.1",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.2",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 4,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.3",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 5,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.4",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:leg_runes_rune_id",
+								"compare_to": 6,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.5",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+
+	"load_tail_rune": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_tail_rune",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 4,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:light_blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Rune of Aetlyena\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[\"\",{\"text\":\"Recover Spirit Energy faster.\"}]','[\"\"]','[{\"text\":\"Runes of Aetlyena\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Wisp Seeker Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[{\"text\":\"Discover living beings near you when sneaking.\"}]','[\"\"]','[{\"text\":\"Runes of Yepi\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.2",
+					"stack": {
+						"item": "minecraft:brown_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Rune of Suffering\",\"bold\":true,\"italic\":false,\"color\":\"dark_red\"}]',Lore:['[\"\",{\"text\":\"Spirit Energy recovers rapidly when Health is critically low.\"}]','[\"\"]','[{\"text\":\"Runes of Oto-Oksu\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.3",
+					"stack": {
+						"item": "minecraft:light_blue_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Moon Rune\",\"bold\":true,\"italic\":false,\"color\":\"aqua\"}]',Lore:['[\"\",{\"text\":\"Spirit Energy recovers faster at night.\"}]','[\"\"]','[{\"text\":\"Runes of Okama and Esmir\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.4",
+					"stack": {
+						"item": "minecraft:gray_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Lore Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_purple\"}]',Lore:['[\"\",{\"text\":\"Able to remove Curse Enchantments in a Grindstone.\"}]','[{\"text\":\"Gain 2x Experience.\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:tail_runes_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.0",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:tail_runes_rune_id",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.1",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:tail_runes_rune_id",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.2",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:tail_runes_rune_id",
+								"compare_to": 4,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.3",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:tail_runes_rune_id",
+								"compare_to": 5,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.4",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+
+	"load_raven_rune": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1,
+		"start_value": 0,
+		"max_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_refresh_current_page",
+					"change": 1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_load_raven_rune",
+					"change": -1
+				},
+				{
+					"type": "origins:change_resource",
+					"resource": "*:*_current_page",
+					"change": 5,
+					"operation": "set"
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.0",
+					"stack": {
+						"item": "minecraft:purple_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Glide Rune\",\"bold\":true,\"italic\":false,\"color\":\"dark_purple\"}]',Lore:['[\"\",{\"text\":\"Grants Glide ability.\"}]','[\"\"]','[{\"text\":\"Runes of Thought\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:replace_inventory",
+					"inventory_type": "power",
+					"power": "*:*_inv",
+					"slot": "container.1",
+					"stack": {
+						"item": "minecraft:light_gray_wool",
+						"amount": 1,
+						"tag": "{display:{Name:'[\"\",{\"text\":\"Lift Glide Rune\",\"bold\":true,\"italic\":false,\"color\":\"light_purple\"}]',Lore:['[{\"text\":\"Grants weaker Glide ability but glide upward with Speak.\"}]','[\"\"]','[{\"text\":\"Runes of Thought\"}]']},delete_if_out:1,HideFlags:1}"
+					}
+				},
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:raven_runes_rune_id",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.0",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:raven_runes_rune_id",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:modify_inventory",
+								"inventory_type": "power",
+								"power": "*:*_inv",
+								"slot": "container.1",
+								"item_action": {
+									"type": "origins:merge_nbt",
+									"nbt": "{Enchantments:[{id:infinity,lvl:1}]}"
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+
+	"inv": {
+		"type": "origins:inventory",
+		"container_type": "dispenser",
+		"key": "key.saveToolbarActivator",
+		"recoverable": false,
+		"title": "Runes"
+	},
+
+	"open_inv_refresh": {
+		"type": "origins:active_self",
+		"key": "key.saveToolbarActivator",
+		"entity_action": {
+			"type": "origins:change_resource",
+			"resource": "*:*_load_main_page",
+			"change": 1
+		}
+	},
+
+	"ticks": {
+		"type": "origins:action_over_time",
+		"interval": 1,
+		"entity_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:if_else_list",
+					"actions": [
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 0,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:if_else_list",
+								"actions": [
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"power": "*:*_inv",
+											"slot": "container.0",
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_head_rune",
+											"change": 1
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"power": "*:*_inv",
+											"slot": "container.1",
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_back_rune",
+											"change": 1
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"power": "*:*_inv",
+											"slot": "container.2",
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_leg_rune",
+											"change": 1
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"power": "*:*_inv",
+											"slot": "container.3",
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_tail_rune",
+											"change": 4,
+											"operation": "set"
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"power": "*:*_inv",
+											"slot": "container.4",
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_raven_rune",
+											"change": 1
+										}
+									},
+									{
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.5",
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_main_page",
+											"change": 1
+										}
+									}
+								]
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:and",
+								"actions": [
+									{
+										"type": "origins:if_else_list",
+										"actions": [
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.0",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:head_runes_rune_id",
+														"compare_to": 1,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:head_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:head_runes_rune_id",
+																"change": 1,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.1",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:head_runes_rune_id",
+														"compare_to": 2,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:head_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:head_runes_rune_id",
+																"change": 2,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.2",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:head_runes_rune_id",
+														"compare_to": 3,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:head_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:head_runes_rune_id",
+																"change": 3,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.3",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:head_runes_rune_id",
+														"compare_to": 4,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:head_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:head_runes_rune_id",
+																"change": 4,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.4",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:head_runes_rune_id",
+														"compare_to": 5,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:head_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:head_runes_rune_id",
+																"change": 5,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											}
+										]
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.0",
+												"container.1",
+												"container.2",
+												"container.3",
+												"container.4"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_head_rune",
+											"change": 1
+										}
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.5",
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_current_page",
+											"change": 0,
+											"operation": "set"
+										}
+									}
+								]
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 2,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:and",
+								"actions": [
+									{
+										"type": "origins:if_else_list",
+										"actions": [
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.0",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:back_runes_rune_id",
+														"compare_to": 1,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:back_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:back_runes_rune_id",
+																"change": 1,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.1",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:back_runes_rune_id",
+														"compare_to": 2,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:back_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:back_runes_rune_id",
+																"change": 2,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.2",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:back_runes_rune_id",
+														"compare_to": 3,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:back_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:back_runes_rune_id",
+																"change": 3,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.3",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:back_runes_rune_id",
+														"compare_to": 4,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:back_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:back_runes_rune_id",
+																"change": 4,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.4",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:back_runes_rune_id",
+														"compare_to": 5,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:back_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:back_runes_rune_id",
+																"change": 5,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											}
+										]
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.0",
+												"container.1",
+												"container.2",
+												"container.3",
+												"container.4"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_back_rune",
+											"change": 1
+										}
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.5",
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_current_page",
+											"change": 0,
+											"operation": "set"
+										}
+									}
+								]
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 3,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:and",
+								"actions": [
+									{
+										"type": "origins:if_else_list",
+										"actions": [
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.0",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 1,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 1,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.1",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 2,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 2,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.2",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 3,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 3,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.3",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 4,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 4,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.4",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 5,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 5,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.5",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:leg_runes_rune_id",
+														"compare_to": 6,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:leg_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:leg_runes_rune_id",
+																"change": 6,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											}
+										]
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.0",
+												"container.1",
+												"container.2",
+												"container.3",
+												"container.4",
+												"container.5"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_leg_rune",
+											"change": 1
+										}
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_current_page",
+											"change": 0,
+											"operation": "set"
+										}
+									}
+								]
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 4,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:and",
+								"actions": [
+									{
+										"type": "origins:if_else_list",
+										"actions": [
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.0",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:tail_runes_rune_id",
+														"compare_to": 1,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:tail_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:tail_runes_rune_id",
+																"change": 1,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.1",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:tail_runes_rune_id",
+														"compare_to": 2,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:tail_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:tail_runes_rune_id",
+																"change": 2,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.2",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:tail_runes_rune_id",
+														"compare_to": 3,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:tail_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:tail_runes_rune_id",
+																"change": 3,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.3",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:tail_runes_rune_id",
+														"compare_to": 4,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:tail_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:tail_runes_rune_id",
+																"change": 4,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.4",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:tail_runes_rune_id",
+														"compare_to": 5,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:tail_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:tail_runes_rune_id",
+																"change": 5,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											}
+										]
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.0",
+												"container.1",
+												"container.2",
+												"container.3",
+												"container.4"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_tail_rune",
+											"change": 1
+										}
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.5",
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_current_page",
+											"change": 0,
+											"operation": "set"
+										}
+									}
+								]
+							}
+						},
+						{
+							"condition": {
+								"type": "origins:resource",
+								"resource": "*:*_current_page",
+								"compare_to": 5,
+								"comparison": "=="
+							},
+							"action": {
+								"type": "origins:and",
+								"actions": [
+									{
+										"type": "origins:if_else_list",
+										"actions": [
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.0",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:raven_runes_rune_id",
+														"compare_to": 1,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:raven_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:raven_runes_rune_id",
+																"change": 1,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											},
+											{
+												"condition": {
+													"type": "origins:inventory",
+													"inventory_types": [
+														"power"
+													],
+													"process_mode": "stacks",
+													"power": "*:*_inv",
+													"slot": "container.1",
+													"item_condition": {
+														"type": "origins:empty"
+													}
+												},
+												"action": {
+													"type": "origins:if_else",
+													"condition": {
+														"type": "origins:resource",
+														"resource": "*:raven_runes_rune_id",
+														"compare_to": 2,
+														"comparison": "=="
+													},
+													"if_action": {
+														"type": "origins:change_resource",
+														"resource": "*:raven_runes_rune_id",
+														"change": 0,
+														"operation": "set"
+													},
+													"else_action": {
+														"type": "origins:and",
+														"actions": [
+															{
+																"type": "origins:change_resource",
+																"resource": "*:raven_runes_rune_id",
+																"change": 2,
+																"operation": "set"
+															},
+															{
+																"type": "origins:execute_command",
+																"command": "/playsound minecraft:block.beacon.activate player @s ~ ~ ~ 0.5 2"
+															}
+														]
+													}
+												}
+											}
+										]
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.0",
+												"container.1"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_load_raven_rune",
+											"change": 1
+										}
+									},
+									{
+										"type": "origins:if_else",
+										"condition": {
+											"type": "origins:inventory",
+											"power": "*:*_inv",
+											"inventory_types": ["power"],
+											"process_mode": "stacks",
+											"slots": [
+												"container.2",
+												"container.3",
+												"container.4",
+												"container.5",
+												"container.6",
+												"container.7",
+												"container.8",
+												"container.9"
+											],
+											"item_condition": {
+												"type": "origins:empty"
+											}
+										},
+										"if_action": {
+											"type": "origins:change_resource",
+											"resource": "*:*_current_page",
+											"change": 0,
+											"operation": "set"
+										}
+									}
+								]
+							}
+						}
+					]
+				},
+				{
+					"type": "origins:drop_inventory",
+					"inventory_type": "power",
+					"retain_ownership": true,
+					"power": "*:*_inv",
+					"item_condition": {
+						"type": "origins:nbt",
+						"nbt": "{delete_if_out:1}",
+						"inverted": true
+					}
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/clear @a #minecraft:wool{delete_if_out:1}"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/clear @a minecraft:gray_stained_glass_pane{delete_if_out:1}"
+				},
+				{
+					"type": "origins:execute_command",
+					"command": "/kill @e[type=item,nbt={Item:{tag:{delete_if_out:1}}}]"
+				}
+			]
+		}
+	}
+}
