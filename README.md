@@ -14,7 +14,7 @@ The third power is a compact skill that gives you multiple strengths and weaknes
 (Forge environement, and other Fabric versions are not tested)
 
 ### Required Dependencies
-Origins - https://modrinth.com/mod/origins/versions?g=1.20.1&l=fabric\
+Origins - https://modrinth.com/mod/origins/versions?g=1.20.1&l=fabric \
 Pehkui - https://modrinth.com/mod/pehkui/versions?g=1.20.1&l=fabric
 
 ### Installing the Origin
