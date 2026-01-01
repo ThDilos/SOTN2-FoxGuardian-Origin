@@ -14,10 +14,6 @@
 				{
 					"type": "origins:execute_command",
 					"command": "/execute store result score @s fox_body_owner_uuid0 run data get entity @p UUID[0] 1"
-				},
-				{
-					"type": "origins:execute_command",
-					"command": "/execute at @p align y run tp @s ~ ~ ~ ~ ~"
 				}
 			]
 		}
