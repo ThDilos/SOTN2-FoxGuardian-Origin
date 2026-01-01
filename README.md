@@ -8,6 +8,8 @@ This origin features a `Rune Slots` system: The first power allows you to activa
 The second power is a passive skill, the buff strengthens as you kill more (up to 20) Ender Dragons.\
 The third power is a compact skill that gives you multiple strengths and weakness to simulate a fox. 
 
+Showcase Video of the First power (Rune Slots) on [Youtube](https://www.youtube.com/watch?v=nCPfxdqkXU8&pp=ygUSI21pbmVjcmFmdCBvcmlnaW5z)
+
 ## Installation
 ### Minecraft Environment
 **Fabric Minecraft 1.20.1**\
