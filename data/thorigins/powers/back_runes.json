@@ -1,7 +1,7 @@
 {
 	"type": "origins:multiple",
 	"hidden": true,
-	
+
 	"rune_id": {
 		"type": "origins:resource",
 		"min": 0,
@@ -307,10 +307,21 @@
 			"type": "origins:and",
 			"conditions": [
 				{
-					"type": "origins:resource",
-					"resource": "*:menu_spirit_energy",
-					"compare_to": 0,
-					"comparison": ">"
+					"type": "origins:or",
+					"conditions": [
+						{
+							"type": "origins:resource",
+							"resource": "*:menu_spirit_energy",
+							"compare_to": 0,
+							"comparison": ">"
+						},
+						{
+							"type": "origins:resource",
+							"resource": "*:*_fox_body",
+							"compare_to": 1,
+							"comparison": "=="
+						}
+					]
 				},
 				{
 					"type": "origins:resource",
