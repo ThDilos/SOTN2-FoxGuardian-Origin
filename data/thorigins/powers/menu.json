@@ -312,6 +312,12 @@
 				},
 				{
 					"type": "origins:resource",
+					"resource": "*:back_runes_fox_body",
+					"compare_to": 0,
+					"comparison": "=="
+				},
+				{
+					"type": "origins:resource",
 					"resource": "*:leg_runes_double_sprint",
 					"compare_to": 0,
 					"comparison": "=="
