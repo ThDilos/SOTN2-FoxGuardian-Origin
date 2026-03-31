@@ -37,24 +37,17 @@
 					"command": "/tag @s remove temp"
 				},
 				{
-					"type": "origins:selector_action",
-					"selector": "@e[tag=fox_body_owner]",
-					"bientity_condition": {
-						"type": "origins:target_condition",
-						"condition": {
-							"type": "origins:resource",
-							"resource": "*:back_runes_fox_body",
-							"compare_to": 1,
-							"comparison": "!="
-						}
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_tp_back",
+						"compare_to": 1,
+						"comparison": "=="
 					},
-					"bientity_action": {
-						"type": "origins:actor_action",
-						"action": {
-							"type": "origins:change_resource",
-							"resource": "*:*_exit",
-							"change": 1
-						}
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_exit",
+						"change": 1
 					}
 				},
 				{
@@ -96,33 +89,22 @@
 					"command": "/tp @a[tag=fox_body_owner] ~ ~ ~"
 				},
 				{
+					"type": "origins:change_resource",
+					"resource": "*:*_exit",
+					"change": 1
+				},
+				{
 					"type": "origins:execute_command",
 					"command": "/effect give @a[tag=fox_body_owner] blindness 1 0 true"
-				},
-				{
-					"type": "origins:selector_action",
-					"selector": "@a[tag=fox_body_owner]",
-					"bientity_action": {
-						"type": "origins:target_action",
-						"action": {
-							"type": "origins:change_resource",
-							"resource": "*:back_runes_fox_body",
-							"change": -1
-						}
-					}
-				},
-				{
-					"type": "origins:execute_command",
-					"command": "/tag @a[tag=fox_body_owner] remove fox_body_owner"
 				},
 				{
 					"type": "origins:execute_command",
 					"command": "/tag @s remove temp"
 				},
+
 				{
-					"type": "origins:change_resource",
-					"resource": "*:*_exit",
-					"change": 1
+					"type": "origins:execute_command",
+					"command": "/tag @a[tag=fox_body_owner] remove fox_body_owner"
 				}
 			]
 		}

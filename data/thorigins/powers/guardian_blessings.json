@@ -105,16 +105,12 @@
 
 	"aetlyena_blessing": {
 		"type": "origins:climbing",
-		"allow_holding": true,
 		"condition": {
-			"type": "origins:block_collision",
+			"type": "origins:in_block",
 			"block_condition": {
 				"type": "origins:block",
-				"block": "minecraft:powder_snow"
+				"block": "powder_snow"
 			}
-		},
-		"hold_condition": {
-			"type": "origins:sneaking"
 		}
 	},
 

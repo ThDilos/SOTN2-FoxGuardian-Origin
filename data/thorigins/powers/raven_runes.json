@@ -170,212 +170,6 @@
 		}
 	},
 
-	"ticks": {
-		"type": "origins:action_over_time",
-		"interval": 1,
-		"entity_action": {
-			"type": "origins:and",
-			"actions": [
-				{
-					"type": "origins:if_else",
-					"condition": {
-						"type": "origins:resource",
-						"resource": "*:*_pressing",
-						"compare_to": 0,
-						"comparison": "=="
-					},
-					"if_action": {
-						"type": "origins:change_resource",
-						"resource": "*:*_temp_locked",
-						"change": -1
-					}
-				},
-				{
-					"type": "origins:selector_action",
-					"selector": "@e[tag=thought]",
-					"bientity_condition": {
-						"type": "origins:target_condition",
-						"condition": {
-							"type": "origins:riding",
-							"inverted": true
-						}
-					},
-					"bientity_action": {
-						"type": "origins:target_action",
-						"action": {
-							"type": "origins:and",
-							"actions": [
-								{
-									"type": "origins:execute_command",
-									"command": "/tp ~ -100 ~"
-								},
-								{
-									"type": "origins:execute_command",
-									"command": "/kill @s "
-								}
-							]
-						}
-					}
-				},
-				{
-					"type": "origins:if_else",
-					"condition": {
-						"type": "origins:resource",
-						"resource": "*:*_gliding",
-						"compare_to": 1,
-						"comparison": "=="
-					},
-					"if_action": {
-						"type": "origins:if_else",
-						"condition": {
-							"type": "origins:resource",
-							"resource": "*:*_glide_duration",
-							"compare_to": 0,
-							"comparison": "=="
-						},
-						"if_action": {
-							"type": "origins:change_resource",
-							"resource": "*:*_gliding",
-							"change": -1
-						},
-						"else_action": {
-							"type": "origins:and",
-							"actions": [
-								{
-									"type": "origins:change_resource",
-									"resource": "*:*_glide_duration",
-									"change": -1
-								},
-								{
-									"type": "origins:if_else",
-									"condition": {
-										"type": "origins:or",
-										"conditions": [
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 10,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 20,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 30,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 40,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 50,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 60,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 70,
-												"comparison": "=="
-											},
-											{
-												"type": "origins:resource",
-												"resource": "*:*_glide_duration",
-												"compare_to": 80,
-												"comparison": "=="
-											}
-										]
-									},
-									"if_action": {
-										"type": "origins:play_sound",
-										"category": "neutral",
-										"sound": "minecraft:entity.chicken.hurt",
-										"volume": 0.8,
-										"pitch": 1.2
-									}
-								}
-							]
-						}
-					}
-				},
-				{
-					"type": "origins:if_else",
-					"condition": {
-						"type": "origins:or",
-						"conditions": [
-							{
-								"type": "origins:on_block"
-							},
-							{
-								"type": "origins:resource",
-								"resource": "*:*_pressing",
-								"compare_to": 0,
-								"comparison": "=="
-							}
-						]
-					},
-					"if_action": {
-						"type": "origins:change_resource",
-						"resource": "*:*_gliding",
-						"change": -1
-					}
-				},
-				{
-					"type": "origins:if_else",
-					"condition": {
-						"type": "origins:on_block"
-					},
-					"if_action": {
-						"type": "origins:and",
-						"actions": [
-							{
-								"type": "origins:change_resource",
-								"resource": "*:*_glide_duration",
-								"change": 240
-							},
-							{
-								"type": "origins:change_resource",
-								"resource": "*:*_temp_locked",
-								"change": -1
-							},
-							{
-								"type": "origins:change_resource",
-								"resource": "*:*_uplifted",
-								"change": -1
-							}
-						]
-					}
-				}
-			]
-		}
-	},
-
-	"temp_locked": {
-		"type": "origins:resource",
-		"min": 0,
-		"max": 1
-	},
-
-	"pressing": {
-		"type": "origins:cooldown",
-		"cooldown": 3
-	},
-
 	"check_pressing": {
 		"type": "origins:active_self",
 		"key": {
@@ -465,6 +259,231 @@
 				}
 			]
 		}
+	},
+
+	"ticks": {
+		"type": "origins:action_over_time",
+		"interval": 1,
+		"entity_action": {
+			"type": "origins:and",
+			"actions": [
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:on_block"
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_glide_duration",
+								"change": 240
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_temp_locked",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_uplifted",
+								"change": -1
+							}
+						]
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:and",
+						"conditions": [
+							{
+								"type": "origins:resource",
+								"resource": "*:*_gliding",
+								"compare_to": 1,
+								"comparison": "=="
+							},
+							{
+								"type": "origins:or",
+								"conditions": [
+									{
+										"type": "origins:on_block"
+									},
+									{
+										"type": "origins:resource",
+										"resource": "*:*_pressing",
+										"compare_to": 0,
+										"comparison": "=="
+									}
+								]
+							}
+						]
+					},
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_gliding",
+						"change": -1
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_gliding",
+						"compare_to": 1,
+						"comparison": "=="
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_glide_duration",
+								"change": -1
+							},
+							{
+								"type": "origins:if_else",
+								"condition": {
+									"type": "origins:or",
+									"conditions": [
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 10,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 20,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 30,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 40,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 50,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 60,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 70,
+											"comparison": "=="
+										},
+										{
+											"type": "origins:resource",
+											"resource": "*:*_glide_duration",
+											"compare_to": 80,
+											"comparison": "=="
+										}
+									]
+								},
+								"if_action": {
+									"type": "origins:play_sound",
+									"category": "neutral",
+									"sound": "minecraft:entity.chicken.hurt",
+									"volume": 0.8,
+									"pitch": 1.2
+								}
+							}
+						]
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_pressing",
+						"compare_to": 0,
+						"comparison": "=="
+					},
+					"if_action": {
+						"type": "origins:change_resource",
+						"resource": "*:*_temp_locked",
+						"change": -1
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:resource",
+						"resource": "*:*_gliding",
+						"compare_to": 1,
+						"comparison": "=="
+					},
+					"if_action": {
+						"type": "origins:if_else",
+						"condition": {
+							"type": "origins:resource",
+							"resource": "*:*_glide_duration",
+							"compare_to": 0,
+							"comparison": "=="
+						},
+						"if_action": {
+							"type": "origins:change_resource",
+							"resource": "*:*_gliding",
+							"change": -1
+						}
+					}
+				},
+				{
+					"type": "origins:if_else",
+					"condition": {
+						"type": "origins:on_block"
+					},
+					"if_action": {
+						"type": "origins:and",
+						"actions": [
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_glide_duration",
+								"change": 240
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_temp_locked",
+								"change": -1
+							},
+							{
+								"type": "origins:change_resource",
+								"resource": "*:*_uplifted",
+								"change": -1
+							}
+						]
+					}
+				}
+			]
+		}
+	},
+
+	"temp_locked": {
+		"type": "origins:resource",
+		"min": 0,
+		"max": 1
+	},
+
+	"pressing": {
+		"type": "origins:cooldown",
+		"cooldown": 3
 	},
 
 	"slow_fall_glide": {
