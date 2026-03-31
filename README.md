@@ -2,22 +2,14 @@
 **A fan-made Minecraft Datapack for Fabric Origins Mod, inspired by the Game Series <Spirit of the North>**
 
 ## Introduction
-**Language**: English
+This is not the [main](https://github.com/ThDilos/SOTN2-FoxGuardian-Origin) branch >:c\
+This branch is created specifically for **Discontinued Unofficial Forge Origins**
 
-This origin features a `Rune Slots` system: The first power allows you to activate different powers via a psudo-inventory menu.\
-The second power is a passive skill, the buff strengthens as you kill more (up to 20) Ender Dragons.\
-The third power is a compact skill that gives you multiple strengths and weakness to simulate a fox. 
+Fixed most of the bugs that _only exist_ on **Discontinued Unofficial Forge Origins**
 
-Showcase Video of the First power (Rune Slots) on [Youtube](https://www.youtube.com/watch?v=nCPfxdqkXU8&pp=ygUSI21pbmVjcmFmdCBvcmlnaW5z)
+Unfixed ones like "Thought will appear in place but actually is following you around" are unfixable, completely, they are common bugs that all origins run on **Discontinued Unofficial Forge Origins** will encounter
 
-## Installation
-### Minecraft Environment
-**Fabric Minecraft 1.20.1**\
-(Forge environement, and other Fabric versions are not tested)
-
-### Required Dependencies
-Origins - https://modrinth.com/mod/origins/versions?g=1.20.1&l=fabric \
-Pehkui - https://modrinth.com/mod/pehkui/versions?g=1.20.1&l=fabric
+It is **HIGHLY** recommended that you use the **Official Fabric Origins** instead
 
 ### Installing the Origin
 1. Head to [Release](https://github.com/ThDilos/SOTN2-FoxGuardian-Origin/releases) and download the latest Datapack and Resource Pack.\
